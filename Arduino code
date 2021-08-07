@@ -1,0 +1,40 @@
+#define BLYNK_PRINT Serial
+
+ #include <ESP8266WiFi.h>;
+ #include <BlynkSimpleEsp8266.h>;
+ #include <Servo.h>
+ char auth[] = "  "; //token blynk via e-mail
+ char ssid[] = "  "; //nama wifi
+ char pass[] = "  "; //password wifi
+ Servo servo;
+ int pos;
+ 
+ void setup(){
+   Serial.begin(9600);
+   Blynk.begin(auth, ssid, pass);
+   servo.attach(D1);
+ }
+ 
+ void loop(){
+   Blynk.run();
+ }
+
+ void move(){
+   for(pos = 0; pos<=90;pos++){
+     servo.write(pos);
+     delay(10);
+   }
+   for(pos = 90; pos>=0;pos--){
+     servo.write(pos);
+     delay(10);
+   }
+  }
+ BLYNK_WRITE(V1){
+   int pinValue = param.asInt();
+   if(pinValue == 1){
+    move();
+    Blynk.run();
+    pinValue = 0;
+    Blynk.syncVirtual(V1);
+    }
+  }
